@@ -159,7 +159,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-api/target
 lib
 models/target
 services/target
