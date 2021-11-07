@@ -5,7 +5,9 @@ import javax.persistence.*;
 @Table(name = "bookings")
 @NamedQueries(value =
         {
-                @NamedQuery(name = "BookingEntity.getAll", query = "SELECT b FROM BookingEntity b")
+                @NamedQuery(name = "BookingEntity.getAll", query = "SELECT b FROM BookingEntity b"),
+                @NamedQuery(name = "BookingEntity.getByCustomerId", query = "SELECT b FROM BookingEntity b WHERE b.customerid = :customerid"),
+                @NamedQuery(name = "BookingEntity.getByWorkerId", query = "SELECT b FROM BookingEntity b WHERE b.workerid = :workerid"),
         })
 public class BookingEntity implements java.io.Serializable {
     @Id
