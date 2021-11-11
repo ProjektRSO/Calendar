@@ -1,4 +1,4 @@
-FROM openjdk:8u312-oraclelinux8 AS build
+FROM openjdk:14-jre-hotspot AS build
 COPY ./ /app
 WORKDIR /app
 RUN mvn clean package -U
