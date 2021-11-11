@@ -3,7 +3,7 @@ COPY ./ /app
 WORKDIR /app
 RUN mvn clean package -U
 
-FROM adopttoopenjdk:14-jre-hotspot
+FROM adoptopenjdk:14-jre-hotspot
 RUN mkdir /app
 WORKDIR /app
 COPY --from=build ./app/api/target/api-1.0-SNAPSHOT.jar /app
