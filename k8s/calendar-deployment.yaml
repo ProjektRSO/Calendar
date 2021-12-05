@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calendar-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calendar
+  template:
+    metadata:
+      labels:
+        app: calendar
+    spec:
+      containers:
+        - image: dm4018/rso2021.calendar:2021-11-16-21-21-05
+          name: calendar
+          env:
+            - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
+              value: jdbc:postgresql://fanny.db.elephantsql.com:5432/nnzrvsca
+            - name: KUMULUZEE_DATASOURCES0_USERNAME
+              value: nnzrvsca
+            - name: KUMULUZEE_DATASOURCES0_PASSWORD
+              value: MNfRANGZRqoijwhObpLs6AJd-vqvo36j
+          ports:
+            - containerPort: 8080
+              name: server
+              protocol: TCP
+#        livenessProbe:
+#          httpGet:
+#            path: /health/live
+#            port: server
+#          initialDelaySeconds: 20
+#          periodSeconds: 3
+#          readinessProbe:
+#            httpGet:
+#              path: /health/ready
+#              port: server
+#            initialDelaySeconds: 20
+#            periodSeconds: 3
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: calendar
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: server
+  selector:
+    app: calendar
