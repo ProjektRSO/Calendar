@@ -6,3 +6,11 @@
 https://examples.javacodegeeks.com/enterprise-java/jpa-named-query-example/
 
 PUT doesn't need id, INDENTITY strategy will assign auto increment
+
+CREATE TABLE bookings (
+	id serial PRIMARY KEY,
+	customerid integer NOT NULL,
+	workerid integer NOT NULL,
+	t_from bigint NOT NULL,
+	t_to bigint NOT NULL
+);
