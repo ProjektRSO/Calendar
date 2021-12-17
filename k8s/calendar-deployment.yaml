@@ -13,7 +13,7 @@ spec:
         app: calendar
     spec:
       containers:
-        - image: dm4018/rso2021.calendar:2021-11-16-21-21-05
+        - image: dm4018/rso2021.calendar:2021-12-06-05-52-46
           name: calendar
           env:
             - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
