@@ -4,13 +4,10 @@ kumuluzee:
   env:
     name: dev
   server:
-    base-url: http://localhost:8080
+    base-url: http://localhost:8081
     http:
-      port: 8080
-  datasources:
-    - jndi-name: jdbc/bookings-jpa
-      connection-url: jdbc:postgresql://fanny.db.elephantsql.com:5432/nnzrvsca
-      username: nnzrvsca
-      password: MNfRANGZRqoijwhObpLs6AJd-vqvo36j
+      port: 8081
+bookings-url:
+  url: http://localhost:8082/v1/bookings
 
 # docker run -d --name rso-bookingsdb -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=bookings -p 5435:5432 --network rso2021 postgres:13

@@ -24,7 +24,7 @@ import si.fri.rso2021.calendar.models.objects.Booking;
 public class BookingBean {
     private Logger log = Logger.getLogger(BookingBean.class.getName());
 
-    @PersistenceContext(unitName = "bookings-jpa")
+    //@PersistenceContext(unitName = "bookings-jpa")
     //@Inject
     private EntityManager em;
 
