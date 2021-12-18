@@ -34,7 +34,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@ConfigBundle("bookings-url")
+import si.fri.rso2021.calendar.services.config.RestProperties;
+
+
 @ApplicationScoped
 @Path("/calendar")
 @Produces(MediaType.APPLICATION_JSON)
@@ -42,8 +44,10 @@ import java.util.logging.Logger;
 public class CalendarResource {
     private Logger log = Logger.getLogger(CalendarResource.class.getName());
 
-    @ConfigValue(watch = true)
-    private String url = "http://52.149.170.232:8082/v1/bookings";
+    //private String url = "http://52.149.170.232:8082/v1/bookings";
+
+    @Inject
+    private RestProperties restProperties;
 
     @Inject
     private BookingBean bookingBean;
@@ -51,9 +55,12 @@ public class CalendarResource {
     @Context
     protected UriInfo uriInfo;
 
+    String url = "";
+
     private List<Booking> makeListRequest(String type, String urlparam) throws IOException {
-        log.info("STARTING" + type + "REQUEST " + this.url);
-        URL url = new URL(this.url + urlparam);
+        String dburl = restProperties.getBookingsurl();
+        log.info("STARTING " + type + " REQUEST " + dburl);
+        URL url = new URL(dburl + urlparam);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("accept", "application/json");
@@ -64,8 +71,9 @@ public class CalendarResource {
     }
 
     private Booking makeObjectRequest(String type, String urlparam) throws IOException {
-        log.info("STARTING" + type + "REQUEST " + this.url);
-        URL url = new URL(this.url + urlparam);
+        String dburl = restProperties.getBookingsurl();
+        log.info("STARTING" + type + "REQUEST " + dburl);
+        URL url = new URL(dburl + urlparam);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("accept", "application/json");
@@ -119,7 +127,8 @@ public class CalendarResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         log.info("MAKING POST REQUEST" + b.toString());
-        URL url = new URL(this.url);
+        String dburl = restProperties.getBookingsurl();
+        URL url = new URL(dburl);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json; utf-8");
