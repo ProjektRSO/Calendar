@@ -6,6 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kumuluz.ee.configuration.cdi.ConfigBundle;
 import com.kumuluz.ee.configuration.cdi.ConfigValue;
+import com.kumuluz.ee.cors.annotations.CrossOrigin;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import si.fri.rso2021.calendar.models.entities.BookingEntity;
 import si.fri.rso2021.calendar.models.objects.Booking;
 import si.fri.rso2021.calendar.services.beans.BookingBean;
@@ -41,6 +48,7 @@ import si.fri.rso2021.calendar.services.config.RestProperties;
 @Path("/calendar")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@CrossOrigin(supportedMethods = "GET, POST")
 public class CalendarResource {
     private Logger log = Logger.getLogger(CalendarResource.class.getName());
 
@@ -83,32 +91,27 @@ public class CalendarResource {
         return booking;
     }
 
+    @Operation(description = "Get all bookings data.", summary = "Get all bookings")
+    @APIResponses({
+            @APIResponse(responseCode = "200",
+                    description = "List of booking data",
+                    content = @Content(schema = @Schema(implementation = Booking.class, type = SchemaType.ARRAY))
+            )})
     @GET
     public Response getBookings() throws IOException {
         List<Booking> bookings = makeListRequest("GET", "");
         return Response.status(Response.Status.OK).entity(bookings).build();
     }
 
-    @GET
-    @Path("/{id}")
-    public Response getBookingbyId(@PathParam("id") Integer id) throws IOException {
-        Booking w = makeObjectRequest("GET", String.format("/%d", id));
-        if (w == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return Response.status(Response.Status.OK).entity(w).build();
-    }
-
-    @GET
-    @Path("/c/{cid}")
-    public Response getBookingsbyCustomerId(@PathParam("cid") Integer cid) throws IOException {
-        List<Booking> bs = makeListRequest("GET", String.format("/c/%d", cid));
-        if (bs == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return Response.status(Response.Status.OK).entity(bs).build();
-    }
-
+    @Operation(description = "Get one booking data by worker id.", summary = "Get one booking")
+    @APIResponses({
+            @APIResponse(responseCode = "200",
+                    description = "Booking data",
+                    content = @Content(schema = @Schema(implementation = Booking.class, type = SchemaType.ARRAY))
+            ),
+            @APIResponse( responseCode = "404",
+                    description = "Booking with id does not exist"
+            )})
     @GET
     @Path("/w/{wid}")
     public Response getBookingsbyWorkerId(@PathParam("wid") Integer wid) throws IOException {
@@ -120,6 +123,15 @@ public class CalendarResource {
         return Response.status(Response.Status.OK).entity(bs).build();
     }
 
+
+    @Operation(description = "Create one booking.", summary = "Create one booking")
+    @APIResponses({
+            @APIResponse(responseCode = "201",
+                    description = "Booking created"
+            ),
+            @APIResponse( responseCode = "400",
+                    description = "Creation not successful"
+            )})
     @POST
     public Response createBooking(Booking b) throws IOException {
         if (b.getCustomerid() == null || b.getWorkerid() == null) {
