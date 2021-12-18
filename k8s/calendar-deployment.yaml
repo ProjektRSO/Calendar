@@ -13,17 +13,10 @@ spec:
         app: calendar
     spec:
       containers:
-        - image: dm4018/rso2021.calendar:2021-12-18-07-10-03
+        - image: dm4018/rso2021.calendar:2021-12-18-18-32-59
           name: calendar
-          env:
-            - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
-              value: jdbc:postgresql://fanny.db.elephantsql.com:5432/nnzrvsca
-            - name: KUMULUZEE_DATASOURCES0_USERNAME
-              value: nnzrvsca
-            - name: KUMULUZEE_DATASOURCES0_PASSWORD
-              value: MNfRANGZRqoijwhObpLs6AJd-vqvo36j
           ports:
-            - containerPort: 8080
+            - containerPort: 8081
               name: server
               protocol: TCP
 #        livenessProbe:
@@ -47,7 +40,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 8080
+    - port: 8081
       protocol: TCP
       targetPort: server
   selector:

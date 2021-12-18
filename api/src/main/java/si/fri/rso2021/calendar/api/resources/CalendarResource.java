@@ -43,7 +43,7 @@ public class CalendarResource {
     private Logger log = Logger.getLogger(CalendarResource.class.getName());
 
     @ConfigValue(watch = true)
-    private String url = "http://localhost:8082/v1/bookings";
+    private String url = "http://20.81.50.151:8082/v1/bookings";
 
     @Inject
     private BookingBean bookingBean;
