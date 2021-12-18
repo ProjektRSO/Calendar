@@ -9,7 +9,7 @@ kumuluzee:
       port: 8081
   config:
     consul:
-      agent: http://104.45.176.251:8500
+      agent: http://52.151.239.184:8500
   health:
     metrics:
       web-instrumentation:
@@ -23,6 +23,6 @@ kumuluzee:
 rest-properties:
   maintenance-mode: false
   broken: false
-  bookingsurl: http://52.149.170.232:8082/v1/bookings
+  bookingsurl: http://52.142.37.114:8082/v1/bookings
 
 # docker run -d --name rso-bookingsdb -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=bookings -p 5435:5432 --network rso2021 postgres:13
