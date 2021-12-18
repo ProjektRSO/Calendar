@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kumuluz.ee.configuration.cdi.ConfigBundle;
 import com.kumuluz.ee.configuration.cdi.ConfigValue;
 import com.kumuluz.ee.cors.annotations.CrossOrigin;
+import com.kumuluz.ee.logs.cdi.Log;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -43,7 +44,7 @@ import java.util.logging.Logger;
 
 import si.fri.rso2021.calendar.services.config.RestProperties;
 
-
+@Log
 @ApplicationScoped
 @Path("/calendar")
 @Produces(MediaType.APPLICATION_JSON)
