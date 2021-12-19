@@ -9,7 +9,7 @@ kumuluzee:
       port: 8081
   config:
     consul:
-      agent: http://localhost:8500/
+      agent: http://52.151.239.184:8500/
   health:
     metrics:
       web-instrumentation:
