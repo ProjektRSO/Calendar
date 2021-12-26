@@ -4,8 +4,6 @@ package si.fri.rso2021.calendar.api.resources;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.kumuluz.ee.configuration.cdi.ConfigBundle;
-import com.kumuluz.ee.configuration.cdi.ConfigValue;
 import com.kumuluz.ee.cors.annotations.CrossOrigin;
 import com.kumuluz.ee.discovery.annotations.DiscoverService;
 import com.kumuluz.ee.logs.cdi.Log;
@@ -17,15 +15,13 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import si.fri.rso2021.calendar.models.objects.Booking;
 import si.fri.rso2021.calendar.models.objects.Worker;
+import si.fri.rso2021.calendar.models.objects.Month;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -33,13 +29,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.awt.print.Book;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.logging.Level;
+import java.time.YearMonth;
+import java.util.*;
 import java.util.logging.Logger;
 
 import si.fri.rso2021.calendar.services.config.RestProperties;
@@ -62,15 +58,17 @@ public class CalendarResource {
     protected UriInfo uriInfo;
 
     @Inject
+    @DiscoverService(value = "worker-service", environment = "dev", version = "1.0.0")
+    private String workerurl;
+
+    @Inject
     @DiscoverService(value = "bookings-service", environment = "dev", version = "1.0.0")
     private String bookingurl;
 
-    @Inject
-    @DiscoverService(value = "workers-service", environment = "dev", version = "1.0.0")
-    private String workerurl;
+
 
     private List<Booking> makeListRequest(String type, String urlparam) throws IOException {
-        String dburl = this.bookingurl;
+        String dburl = this.bookingurl +  "/v1/bookings";
         log.info("STARTING " + type + " REQUEST " + dburl);
         URL url = new URL(dburl + urlparam);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -83,7 +81,7 @@ public class CalendarResource {
     }
 
     private Booking makeObjectRequest(String type, String urlparam) throws IOException {
-        String dburl = this.bookingurl;
+        String dburl = this.bookingurl +  "/v1/bookings";
         log.info("STARTING" + type + "REQUEST " + dburl);
         URL url = new URL(dburl + urlparam);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -96,7 +94,7 @@ public class CalendarResource {
     }
 
     private List<Worker> makeWorkerListRequest(String type, String urlparam) throws IOException {
-        String dburl = this.workerurl;
+        String dburl = this.workerurl +  "/v1/workers";
         log.info("STARTING " + type + " REQUEST " + dburl);
         URL url = new URL(dburl + urlparam);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -123,15 +121,33 @@ public class CalendarResource {
 //    }
 
     @GET
-    public Response getMonth() throws IOException {
+    @Path("/{month_number}")
+    public Response getMonth(@PathParam("month_number") int month_number) throws IOException {
         // for each worker get their working days
         // for each worker get their bookings
-        // IDEJA -> spremeni booking in worker delovni čas samo v dneve, da se ne rabiš ubadat z urami
         List<Booking> bookings = makeListRequest("GET", "");
         List<Worker> workers = makeWorkerListRequest("GET", "");
-
-
-        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+        int daysInMonth = YearMonth.of(1999, month_number).lengthOfMonth(); //28
+        Map<Integer, Set<Integer>> map = new HashMap<Integer, Set<Integer>>();
+        for (int day = 1; day <= daysInMonth; day++) {
+            for (Worker w : workers) {
+                boolean free = true;
+                for (Booking b : bookings) {
+                    if (Objects.equals(b.getWorkerid(), w.getId()) && b.getMonth() == month_number && b.getDay() == day) free = false;
+                    else log.info("MONTH " + b.getWorkerid().toString() + b.getDay());
+                }
+                if (free) {
+                    Set<Integer> set = map.get(day);
+                    if (set == null) {
+                        set = new HashSet<Integer>();
+                        set.add(w.getId());
+                        map.put(day, set);
+                    }
+                    else map.get(day).add(w.getId());
+                }
+            }
+        }
+        return Response.status(Response.Status.OK).entity(map).build();
     }
 
     @Operation(description = "Get one booking data by worker id.", summary = "Get one booking")
@@ -145,7 +161,7 @@ public class CalendarResource {
             )})
     @GET
     @Path("/w/{wid}")
-    public Response getBookingsbyWorkerId(@PathParam("wid") Integer wid) throws IOException {
+    public Response getBookingsbyWorkerId(@PathParam("wid") int wid) throws IOException {
 
         List<Booking> bs = makeListRequest("GET", String.format("/w/%d", wid));
         if (bs == null) {
