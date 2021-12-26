@@ -13,8 +13,15 @@ spec:
         app: calendar
     spec:
       containers:
-        - image: dm4018/rso2021.calendar:2021-12-18-19-03-49
+        - image: dm4018/rso2021.calendar:2021-12-19-19-55-15
           name: calendar
+          env:
+            - name: KUMULUZEE_CONFIG_CONSUL_AGENT
+              value: http://52.151.239.184:8500/
+            - name: REST-PROPERTIES_BOOKINGSURL
+              value: http://20.83.133.67:8082/v1/bookings/
+            - name: KUMULUZEE_DISCOVERY_CONSUL_AGENT
+              value: http://52.151.239.184:8500/
           ports:
             - containerPort: 8081
               name: server

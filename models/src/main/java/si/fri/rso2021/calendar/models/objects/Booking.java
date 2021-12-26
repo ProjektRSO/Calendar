@@ -4,13 +4,11 @@ public class Booking {
     private Integer id;
     private Integer workerid;
     private Integer customerid;
-    // in unix time
-    private long from;
-    private long to;
+    private int day;
+    private int month;
+    private int year;
 
-    public Integer getId() {
-        return id;
-    }
+    public Integer getId() { return id; }
 
     public void setId(Integer id) {
         this.id = id;
@@ -32,19 +30,28 @@ public class Booking {
         this.workerid = workerid;
     }
 
-    public long getFrom() {
-        return from;
+
+    public int getDay() {
+        return day;
     }
 
-    public void setFrom(long from) {
-        this.from = from;
+    public void setDay(int day) {
+        this.day = day;
     }
 
-    public long getTo() {
-        return to;
+    public int getMonth() {
+        return month;
     }
 
-    public void setTo(long to) {
-        this.to = to;
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }

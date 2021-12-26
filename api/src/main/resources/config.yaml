@@ -9,7 +9,7 @@ kumuluzee:
       port: 8081
   config:
     consul:
-      agent: http://52.151.239.184:8500/
+      agent: http://localhost:8500/
   health:
     metrics:
       web-instrumentation:
@@ -17,12 +17,13 @@ kumuluzee:
           url-pattern: /v1/calendar/*
   rest-client:
     registrations:
-      - class: calendar-api
+      - class: calendar-service
         url: http://localhost:8081/v1/calendar
         read-timeout: 5000
 rest-properties:
   maintenance-mode: false
   broken: false
   bookingsurl: http://localhost:8082/v1/bookings/
+  workersurl: http://localhost:8080/v1/workers/
 
 # docker run -d --name rso-bookingsdb -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=bookings -p 5435:5432 --network rso2021 postgres:13

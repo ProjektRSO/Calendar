@@ -21,6 +21,9 @@ public class RestProperties {
     @ConfigValue(watch = true)
     private String bookingsurl;
 
+    @ConfigValue(watch = true)
+    private String workersurl;
+
     public Boolean getMaintenanceMode() {
         return this.maintenanceMode;
     }
@@ -43,5 +46,13 @@ public class RestProperties {
 
     public void setBookingsurl(String bookingsurl) {
         this.bookingsurl = bookingsurl;
+    }
+
+    public String getWorkersurl() {
+        return workersurl;
+    }
+
+    public void setWorkersurl(String workersurl) {
+        this.workersurl = workersurl;
     }
 }
