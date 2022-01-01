@@ -68,7 +68,7 @@ public class CalendarResource {
 
 
     private List<Booking> makeListRequest(String type, String urlparam) throws IOException {
-        String dburl = this.bookingurl +  "/v1/bookings";
+        String dburl = restProperties.getBookingsurl();
         log.info("STARTING " + type + " REQUEST " + dburl);
         URL url = new URL(dburl + urlparam);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -81,7 +81,7 @@ public class CalendarResource {
     }
 
     private Booking makeObjectRequest(String type, String urlparam) throws IOException {
-        String dburl = this.bookingurl +  "/v1/bookings";
+        String dburl = restProperties.getBookingsurl();
         log.info("STARTING" + type + "REQUEST " + dburl);
         URL url = new URL(dburl + urlparam);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -94,7 +94,7 @@ public class CalendarResource {
     }
 
     private List<Worker> makeWorkerListRequest(String type, String urlparam) throws IOException {
-        String dburl = this.workerurl +  "/v1/workers";
+        String dburl = restProperties.getWorkersurl();
         log.info("STARTING " + type + " REQUEST " + dburl);
         URL url = new URL(dburl + urlparam);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -127,7 +127,7 @@ public class CalendarResource {
         // for each worker get their bookings
         List<Booking> bookings = makeListRequest("GET", "");
         List<Worker> workers = makeWorkerListRequest("GET", "");
-        int daysInMonth = YearMonth.of(1999, month_number).lengthOfMonth(); //28
+        int daysInMonth = YearMonth.of(Calendar.getInstance().get(Calendar.YEAR), month_number).lengthOfMonth(); //28
         Map<Integer, Set<Integer>> map = new HashMap<Integer, Set<Integer>>();
         for (int day = 1; day <= daysInMonth; day++) {
             for (Worker w : workers) {
